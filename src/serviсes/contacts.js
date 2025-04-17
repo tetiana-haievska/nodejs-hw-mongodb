@@ -1,14 +1,14 @@
-import ContactColection from '../db/models/contact.js';
+import ContactCollection from '../db/models/contact.js';
 
-export const getContacts = () => ContactColection.find();
+export const getContacts = () => ContactCollection.find();
 export const getContact = (contactId) =>
-  ContactColection.findOne({ _id: contactId });
+  ContactCollection.findOne({ _id: contactId });
 
-export const addContact = (payload) => ContactColection.create(payload);
+export const addContact = (payload) => ContactCollection.create(payload);
 
 export const upsertContact = async (contactId, payload, option = {}) => {
   const { upsert } = option;
-  const rawResult = await ContactColection.findByIdAndUpdate(
+  const rawResult = await ContactCollection.findByIdAndUpdate(
     { _id: contactId },
     payload,
     {
@@ -26,4 +26,4 @@ export const upsertContact = async (contactId, payload, option = {}) => {
 };
 
 export const deleteContactById = (contactId) =>
-  ContactColection.findOneAndDelete({ _id: contactId });
+  ContactCollection.findOneAndDelete({ _id: contactId });
