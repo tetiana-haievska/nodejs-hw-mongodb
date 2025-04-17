@@ -1,6 +1,14 @@
+// export const errorHandler = (error, req, res, next) => {
+//     const { status = 500, message = 'Sarver error' } = error;
+//     res.status(status).json({
+//       message,
+//     });
+//   };
 export const errorHandler = (error, req, res, next) => {
-    const { status = 500, message = 'Sarver error' } = error;
+    const { status = 500, message = 'Server error', data = null } = error;
     res.status(status).json({
-      message,
+        status,
+        message,
+        data,
     });
-  };
+};
