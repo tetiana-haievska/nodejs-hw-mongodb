@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   getContactsController,
-  getContactsByITController,
+  getContactsByIdController,
   addContactsController,
   upsertContactController,
   updateContactController,
@@ -13,7 +13,7 @@ const contactRouter = Router();
 
 contactRouter.get('/', ctrlWrapper(getContactsController));
 
-contactRouter.get('/:contactId', ctrlWrapper(getContactsByITController));
+contactRouter.get('/:contactId', ctrlWrapper(getContactsByIdController));
 
 contactRouter.post('/', ctrlWrapper(addContactsController));
 
