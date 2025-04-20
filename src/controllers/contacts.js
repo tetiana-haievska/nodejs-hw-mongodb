@@ -4,6 +4,7 @@ import {
   addContact,
   upsertContact,
   deleteContactById,
+  updateContactById,
 } from '../services/contacts.js';
 
 import createHttpError from 'http-errors';
@@ -17,7 +18,7 @@ export const getContactsController = async (req, res) => {
   });
 };
 
-export const getContactsByITController = async (req, res) => {
+export const getContactsByIdController = async (req, res) => {
   const { contactId } = req.params;
 
   const data = await getContact(contactId);
@@ -76,15 +77,17 @@ export const updateContactController = async (req, res) => {
     throw createHttpError(400, 'Request body is empty or invalid');
   }
   // const { data } = await upsertContact(contactId, req.body);
-  const {data: updateContact} = await upsertContact(contactId, req.body);
+  // const {data: updateContact} = await upsertContact(contactId, req.body);
+  const updatedContact = await updateContactById(contactId, req.body);
 
-  if (!updateContact) {
-    throw createHttpError(404, `Contact with ${contactId} not found`);
+  if (!updatedContact) {
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
   }
+
   res.status(200).json({
     status: 200,
-    message: 'Successfully update a contact!',
-    data: updateContact,
+    message: 'Successfully updated contact!',
+    data: updatedContact,
   });
 };
 
