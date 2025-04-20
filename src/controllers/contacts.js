@@ -4,7 +4,7 @@ import {
   addContact,
   upsertContact,
   deleteContactById,
-} from '../serviсes/contacts.js';
+} from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res) => {
@@ -60,7 +60,7 @@ export const upsertContactController = async (req, res) => {
   const status = isNew ? 201 : 200;
   const message = isNew
     ? 'Successfully created a contact!'
-    : 'Successfully update a contact!';
+    : 'Successfully updated a contact!';
   res.status(status).json({
     status,
     message,
@@ -74,15 +74,16 @@ export const updateContactController = async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     throw createHttpError(400, 'Request body is empty or invalid');
   }
-  const { data } = await upsertContact(contactId, req.body);
+  // const { data } = await upsertContact(contactId, req.body);
+  const {data: updateContact} = await upsertContact(contactId, req.body);
 
-  if (!data) {
+  if (!updateContact) {
     throw createHttpError(404, `Contact with ${contactId} not found`);
   }
   res.status(200).json({
     status: 200,
     message: 'Successfully update a contact!',
-    data,
+    data: updateContact,
   });
 };
 

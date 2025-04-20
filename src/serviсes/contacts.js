@@ -8,20 +8,20 @@ export const addContact = (payload) => ContactCollection.create(payload);
 
 export const upsertContact = async (contactId, payload, option = {}) => {
   const { upsert } = option;
-  const rawResult = await ContactCollection.findByIdAndUpdate(
-    { _id: contactId },
+  const updateContact = await ContactCollection.findByIdAndUpdate(
+    contactId,
     payload,
     {
       new: true,
       upsert,
-      includeResultMetadata: true,
+      // includeResultMetadata: true,
     },
   );
-  if (!rawResult || !rawResult.value) return null;
+  if (!updateContact) return null;
 
   return {
-    data: rawResult.value,
-    isNew: Boolean(rawResult.lastErrorObject.upserted),
+    data: updateContact,
+    isNew: upsert && updateContact.wasNew,
   };
 };
 
