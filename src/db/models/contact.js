@@ -26,6 +26,13 @@ const contactSchema = new Schema(
   },
   { timestamps: true, versionKey: false },
 );
+export const contactSortFields = [
+  'name',
+  'phoneNumber',
+  'email',
+  'isFavourite',
+  'contactType',
+];
 
 const ContactCollection = model('contacts', contactSchema);
 
