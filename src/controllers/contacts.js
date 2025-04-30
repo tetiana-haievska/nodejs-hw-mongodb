@@ -8,9 +8,21 @@ import {
 } from '../services/contacts.js';
 
 import createHttpError from 'http-errors';
+import { parsPaginationParams } from '../utils/parsPaginationParams.js';
+import { parsSortParams } from '../utils/parsSortParams.js';
+import { contactSortFields } from '../db/models/contact.js';
+import { parseContactFilterParams } from '../utils/filters/parseContactFilterParams.js';
+
 
 export const getContactsController = async (req, res) => {
-  const data = await getContacts();
+  const paginationParams = parsPaginationParams(req.query);
+  const sortParams = parsSortParams(req.query, contactSortFields);
+  const filters = parseContactFilterParams(req.query);
+  const data = await getContacts({
+    ...paginationParams,
+    ...sortParams,
+    filters,
+  });
   res.json({
     status: 200,
     message: ' Successfully found contacts',
