@@ -3,9 +3,9 @@ import { typeList } from '../constants/contacts.js';
 export const addValidateContacts = Joi.object({
   name: Joi.string().min(3).max(20).required(),
   phoneNumber: Joi.string().min(3).max(20).required(),
-  email: Joi.string().min(3).max(20).required(),
+  email: Joi.string().email().optional(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid(...typeList),
+  contactType: Joi.string().required(),
 });
 
 export const updateValidateContacts = Joi.object({
@@ -13,5 +13,5 @@ export const updateValidateContacts = Joi.object({
   phoneNumber: Joi.string(),
   email: Joi.string(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid(...typeList),
+  contactType: Joi.string().min(3).max(20),
 });

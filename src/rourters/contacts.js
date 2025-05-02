@@ -34,7 +34,7 @@ contactRouter.post(
 contactRouter.put(
   '/:contactId',
   isValidId,
-  validateBody(addValidateContacts),
+  validateBody(updateValidateContacts),
   ctrlWrapper(upsertContactController),
 );
 
