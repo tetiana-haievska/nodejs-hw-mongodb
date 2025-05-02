@@ -13,5 +13,5 @@ export const updateValidateContacts = Joi.object({
   phoneNumber: Joi.string(),
   email: Joi.string(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid(...typeList),
+  contactType: Joi.string().min(3).max(20),
 });

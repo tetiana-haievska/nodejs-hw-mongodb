@@ -1,41 +1,3 @@
-// import ContactCollection from '../db/models/contact.js';
-
-// export const getContacts = () => ContactCollection.find();
-// export const getContact = (contactId) =>
-//   ContactCollection.findOne({ _id: contactId });
-
-// export const addContact = (payload) => ContactCollection.create(payload);
-
-// export const upsertContact = async (contactId, payload, option = {}) => {
-//   const { upsert } = option;
-
-//   const updateContact = await ContactCollection.findByIdAndUpdate(
-//     contactId,
-//     payload,
-//     {
-//       new: true,
-//       upsert,
-//       // includeResultMetadata: true,
-//     },
-//   );
-
-//   if (!updateContact) return null;
-
-//   return {
-//     data: updateContact,
-//     isNew: upsert && !updateContact._id.equals(contactId), // не завжди 100% точний варіант, але краще
-//   };
-// };
-
-// export const updateContactById = async (contactId, payload) => {
-//   return await ContactCollection.findByIdAndUpdate(contactId, payload, {
-//     new: true,
-//   });
-// };
-
-// export const deleteContactById = (contactId) =>
-//   ContactCollection.findOneAndDelete({ _id: contactId });
-
 import ContactCollection from '../db/models/contact.js';
 import { calcPaginationData } from '../utils/calcPaginationData.js';
 
@@ -44,22 +6,20 @@ export const getContacts = async ({
   perPage = 10,
   sortBy = 'name',
   sortOrder = 'asc',
-  type,
-  isFavourite,
+  query = {},
 }) => {
+  const filter = {};
+  if (query.contactType) filter.contactType = query.contactType;
+  if (query.isFavourite !== undefined) filter.isFavourite = query.isFavourite;
+
+  console.log('Final MongoDB Query Filter:', filter);
+
   const skip = (page - 1) * perPage;
   const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
 
-  const filter = {};
-  if (type) {
-    filter.contactType = type;
-  }
-  if (isFavourite !== undefined) {
-    filter.isFavourite = isFavourite === 'true';
-  }
+  console.log('Final MongoDB Sort Options:', sortOptions);
 
   const totalItems = await ContactCollection.countDocuments(filter);
-
   const data = await ContactCollection.find(filter)
     .sort(sortOptions)
     .skip(skip)

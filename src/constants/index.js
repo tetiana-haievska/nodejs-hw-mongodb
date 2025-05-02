@@ -1,4 +1,1 @@
-export const SORT_ORDER = {
-    ASC: 'asc',
-    DESC: 'desc',
-  };
+export const sortList = ['asc', 'desc'];
