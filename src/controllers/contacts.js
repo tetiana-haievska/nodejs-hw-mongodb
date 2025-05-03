@@ -24,7 +24,7 @@ export const getContactsController = async (req, res) => {
   console.log('Parsed filters:', filters);
 
   const query = {};
-  if (filters.contactType) query.contactType = filters.contactType;
+  if (filters.type) query.contactType = filters.type;
   if (filters.isFavourite !== undefined)
     query.isFavourite = filters.isFavourite;
 

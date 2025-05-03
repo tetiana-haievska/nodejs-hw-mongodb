@@ -1,5 +1,6 @@
 import ContactCollection from '../db/models/contact.js';
 import { calcPaginationData } from '../utils/calcPaginationData.js';
+import { typeList } from '../constants/contacts.js';
 
 export const getContacts = async ({
   page = 1,
@@ -8,10 +9,20 @@ export const getContacts = async ({
   sortOrder = 'asc',
   query = {},
 }) => {
-  const filter = {};
-  if (query.contactType) filter.contactType = query.contactType;
-  if (query.isFavourite !== undefined) filter.isFavourite = query.isFavourite;
+  console.log('Final query before passing:', query);
 
+  const filter = {};
+
+  console.log('MongoDB query before filter processing:', query);
+
+  if (query.contactType && typeList.includes(query.contactType)) {
+    filter.contactType = query.contactType;
+  }
+
+  if (query.isFavourite !== undefined) {
+    filter.isFavourite = query.isFavourite;
+  }
+  console.log('Final MongoDB Query Filter before search:', query);
   console.log('Final MongoDB Query Filter:', filter);
 
   const skip = (page - 1) * perPage;
@@ -20,6 +31,16 @@ export const getContacts = async ({
   console.log('Final MongoDB Sort Options:', sortOptions);
 
   const totalItems = await ContactCollection.countDocuments(filter);
+
+  console.log('MongoDB Filter Applied:', filter);
+  console.log('Filter passed to MongoDB:', filter);
+  console.log('Final MongoDB Query Filter before search:', filter);
+  console.log('Filter before applying to MongoDB:', filter);
+  console.log('Final Filter before MongoDB query:', filter);
+  console.log('Filter before MongoDB query:', filter);
+
+  console.log('Final Filter before MongoDB query:', filter);
+
   const data = await ContactCollection.find(filter)
     .sort(sortOptions)
     .skip(skip)
