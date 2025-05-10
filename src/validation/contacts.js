@@ -5,7 +5,7 @@ export const addValidateContacts = Joi.object({
   phoneNumber: Joi.string().min(3).max(20).required(),
   email: Joi.string().email().optional(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid(...typeList),
+  contactType: Joi.string().valid(...typeList).required(),
 });
 
 export const updateValidateContacts = Joi.object({
@@ -13,5 +13,5 @@ export const updateValidateContacts = Joi.object({
   phoneNumber: Joi.string().min(3).max(20).required(),
   email: Joi.string().email().optional(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid(...typeList),
+  contactType: Joi.string().valid(...typeList).required(),
 }).min(1);

@@ -20,6 +20,7 @@ export const getContactsController = async (req, res) => {
   console.log('Sorting Params:', sortParams);
 
   const filters = parseFilterParams(req.query);
+  filters.userId = req.user._id; // Assuming you have userId in req.user
 
   console.log('Parsed filters:', filters);
 
@@ -45,13 +46,16 @@ export const getContactsController = async (req, res) => {
 
 export const getContactsByIdController = async (req, res) => {
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
+  console.log(userId);
+
   const cleanId = contactId.trim();
 
   if (!isValidObjectId(cleanId)) {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const data = await getContact(cleanId);
+  const data = await getContact(cleanId, userId);
   if (!data) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
   }
@@ -64,13 +68,14 @@ export const getContactsByIdController = async (req, res) => {
 };
 
 export const addContactsController = async (req, res) => {
+  const { _id: userId } = req.user;
   const { email, contactType, ...rest } = req.body;
 
   if (!contactType) {
     throw createHttpError(400, 'contactType is required');
   }
 
-  const data = await addContact({ email: email || null, contactType, ...rest });
+  const data = await addContact({ email: email || null, contactType, ...rest, userId });
 
   res.status(201).json({
     status: 201,
@@ -81,11 +86,12 @@ export const addContactsController = async (req, res) => {
 
 export const upsertContactController = async (req, res) => {
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
 
   let isNew = false;
   let data;
   if (contactId) {
-    data = await upsertContact(contactId, req.body);
+    data = await upsertContact(contactId, userId, req.body);
     isNew = false;
   } else {
     data = await addContact(req.body);
@@ -105,6 +111,7 @@ export const upsertContactController = async (req, res) => {
 
 export const updateContactController = async (req, res) => {
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
   const cleanId = contactId.trim();
 
   if (!req.body || Object.keys(req.body).length === 0) {
@@ -115,7 +122,7 @@ export const updateContactController = async (req, res) => {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const updatedContact = await updateContactById(cleanId, req.body);
+  const updatedContact = await updateContactById(cleanId, userId, req.body);
 
   if (!updatedContact) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
@@ -130,13 +137,15 @@ export const updateContactController = async (req, res) => {
 
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
   const cleanId = contactId.trim();
 
   if (!isValidObjectId(cleanId)) {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const data = await deleteContactById(cleanId);
+  const data = await deleteContactById(cleanId, userId);
+  // Check if the contact was found and deleted
 
   if (!data) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);

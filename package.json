@@ -15,12 +15,14 @@
     "nodemon": "^3.1.10"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "eslint": "^9.24.0",
     "express": "^5.1.0",
     "globals": "^16.0.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "mongoose": "^8.14.1",
     "pino-http": "^10.4.0",
