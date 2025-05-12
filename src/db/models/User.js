@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    email: true,
     required: true,
     unique: true,
     lowercase: true
@@ -37,10 +38,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  token: {
-    type: String,
-    default: null
-  }
-}, { timestamps: true });
+  // token: {
+  //   type: String,
+  //   default: null
+  // }
+}, { versionKey: false, timestamps: true });
 
 export const User = mongoose.model('User', userSchema);

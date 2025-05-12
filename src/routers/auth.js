@@ -1,14 +1,31 @@
-import express from 'express';
-import { getContactsController } from '../controllers/contacts.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
-import { register, login } from '../controllers/auth.js';
+// import express from 'express';
+import { Router } from 'express';
+import { validateBody } from '../utils/validateBody.js';
+import { loginSchema, registerSchema } from '../validation/auth.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+// import { getContactsController } from '../controllers/contacts.js';
+// import { authMiddleware } from '../middlewares/authenticate.js';
+import {
+  authLoginController,
+  authRegisterController,
+  logoutController,
+  refreshController,
+} from '../controllers/auth.js';
 
-const router = express.Router();
+const authRouter = Router();
 
-router.get('/contacts', authMiddleware, getContactsController);
-router.post('/register', register);
-router.post('/login', login);
+// authRouter.get('/contacts', authMiddleware, getContactsController);
+authRouter.post(
+  '/register',
+  validateBody(registerSchema),
+  ctrlWrapper(authRegisterController),
+);
+authRouter.post(
+  '/login',
+  validateBody(loginSchema),
+  ctrlWrapper(authLoginController),
+);
+authRouter.post('/refresh', ctrlWrapper(refreshController));
+authRouter.post('/logout', ctrlWrapper(logoutController));
 
-export default router;
-
-
+export default authRouter;
