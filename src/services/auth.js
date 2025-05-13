@@ -26,7 +26,7 @@ export const findUserById = (query) => User.findOne(query);
 
 // const SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
-export const registerUser = async ({ payload }) => {
+export const registerUser = async (payload) => {
   const { email, password } = payload;
 
   const existingUser = await User.findOne({ email });
@@ -52,7 +52,7 @@ export const registerUser = async ({ payload }) => {
 //   return { ...userWithoutPassword, token };
 // };
 
-export const loginUser = async ({ payload }) => {
+export const loginUser = async (payload) => {
   const { email, password } = payload;
 
   const user = await User.findOne({ email });
