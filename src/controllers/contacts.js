@@ -20,11 +20,12 @@ export const getContactsController = async (req, res) => {
   console.log('Sorting Params:', sortParams);
 
   const filters = parseFilterParams(req.query);
-  filters.userId = req.user._id; // Assuming you have userId in req.user
+  filters.userId = req.user._id; 
 
   console.log('Parsed filters:', filters);
 
-  const query = {};
+  const { _id: userId } = req.user;
+  const query = { userId };
   if (filters.type) query.contactType = filters.type;
   if (filters.isFavourite !== undefined)
     query.isFavourite = filters.isFavourite;
@@ -90,11 +91,16 @@ export const upsertContactController = async (req, res) => {
 
   let isNew = false;
   let data;
+
   if (contactId) {
-    data = await upsertContact(contactId, userId, req.body);
-    isNew = false;
+    const payload = { ...req.body, userId };
+    const result = await upsertContact(contactId, payload, {
+      upsert: true,
+    });
+    data = result.data;
+    isNew = result.isNew;
   } else {
-    data = await addContact(req.body);
+    data = await addContact({ ...req.body, userId });
     isNew = true;
   }
 
@@ -122,9 +128,9 @@ export const updateContactController = async (req, res) => {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const updatedContact = await updateContactById(cleanId, userId, req.body);
+  const updatedContact = await updateContactById(cleanId, { ...req.body, userId });
 
-  if (!updatedContact) {
+  if (!updatedContact || updatedContact.userId.toString() !== userId.toString()) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
   }
 
@@ -144,12 +150,19 @@ export const deleteContactController = async (req, res) => {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const data = await deleteContactById(cleanId, userId);
-  // Check if the contact was found and deleted
-
-  if (!data) {
+  const contact = await getContact(cleanId);
+  if (!contact || contact.userId.toString() !== userId.toString()) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
   }
+
+  await deleteContactById(cleanId);
+
+  // const data = await deleteContactById(cleanId, userId);
+  // // Check if the contact was found and deleted
+
+  // if (!data) {
+  //   throw createHttpError(404, `Contact with ID ${cleanId} not found`);
+  // }
 
   res.status(204).send();
 };

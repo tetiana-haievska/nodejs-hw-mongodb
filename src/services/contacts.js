@@ -15,6 +15,10 @@ export const getContacts = async ({
 
   console.log('MongoDB query before filter processing:', query);
 
+  if (query.userId) {
+    filter.userId = query.userId;
+  }
+
   if (query.contactType && typeList.includes(query.contactType)) {
     filter.contactType = query.contactType;
   }
@@ -55,18 +59,18 @@ export const getContacts = async ({
   };
 };
 
-export const getContact = (contactId) => {
-  return ContactCollection.findById(contactId);
+export const getContact = (contactId, userId) => {
+  return ContactCollection.findOne({_id: contactId, userId });
 };
 
 export const addContact = (payload) => {
   return ContactCollection.create(payload);
 };
 
-export const upsertContact = async (contactId, payload, option = {}) => {
+export const upsertContact = async (contactId, userId, payload, option = {}) => {
   const { upsert } = option;
-  const updatedContact = await ContactCollection.findByIdAndUpdate(
-    contactId,
+  const updatedContact = await ContactCollection.findOneAndUpdate(
+    { _id: contactId, userId },
     payload,
     { new: true, upsert },
   );
@@ -79,10 +83,10 @@ export const upsertContact = async (contactId, payload, option = {}) => {
   };
 };
 
-export const updateContactById = async (contactId, payload) => {
-  return ContactCollection.findByIdAndUpdate(contactId, payload, { new: true });
+export const updateContactById = async (contactId, userId, payload) => {
+  return ContactCollection.findOneAndUpdate({ _id: contactId, userId }, payload, { new: true });
 };
 
-export const deleteContactById = (contactId) => {
-  return ContactCollection.findByIdAndDelete(contactId);
+export const deleteContactById = (contactId, userId) => {
+  return ContactCollection.findOneAndDelete({ _id: contactId, userId });
 };
