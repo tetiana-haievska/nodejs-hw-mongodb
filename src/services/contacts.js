@@ -1,3 +1,4 @@
+// import mongoose from 'mongoose';
 import ContactCollection from '../db/models/contact.js';
 import { calcPaginationData } from '../utils/calcPaginationData.js';
 import { typeList } from '../constants/contacts.js';
@@ -60,14 +61,19 @@ export const getContacts = async ({
 };
 
 export const getContact = (contactId, userId) => {
-  return ContactCollection.findOne({_id: contactId, userId });
+  return ContactCollection.findOne({ _id: contactId, userId });
 };
 
 export const addContact = (payload) => {
   return ContactCollection.create(payload);
 };
 
-export const upsertContact = async (contactId, userId, payload, option = {}) => {
+export const upsertContact = async (
+  contactId,
+  userId,
+  payload,
+  option = {},
+) => {
   const { upsert } = option;
   const updatedContact = await ContactCollection.findOneAndUpdate(
     { _id: contactId, userId },
@@ -84,9 +90,12 @@ export const upsertContact = async (contactId, userId, payload, option = {}) => 
 };
 
 export const updateContactById = async (contactId, userId, payload) => {
-  return ContactCollection.findOneAndUpdate({ _id: contactId, userId }, payload, { new: true });
+  return ContactCollection.findOneAndUpdate(
+    { _id: contactId, userId },
+    payload,
+    { new: true },
+  );
 };
 
-export const deleteContactById = (contactId, userId) => {
-  return ContactCollection.findOneAndDelete({ _id: contactId, userId });
-};
+export const deleteContactById = async (contactId, userId) =>
+  ContactCollection.findOneAndDelete({ _id: contactId, userId });

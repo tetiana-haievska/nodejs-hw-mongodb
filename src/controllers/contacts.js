@@ -150,12 +150,18 @@ export const deleteContactController = async (req, res) => {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const contact = await getContact(cleanId);
-  if (!contact || contact.userId.toString() !== userId.toString()) {
+  const deletedContact = await deleteContactById(cleanId, userId);
+
+  if (!deletedContact) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
   }
 
-  await deleteContactById(cleanId);
+  // const contact = await getContact(cleanId);
+  // if (!contact || contact.userId.toString() !== userId.toString()) {
+  //   throw createHttpError(404, `Contact with ID ${cleanId} not found`);
+  // }
+
+  // await deleteContactById(cleanId);
 
   // const data = await deleteContactById(cleanId, userId);
   // // Check if the contact was found and deleted
