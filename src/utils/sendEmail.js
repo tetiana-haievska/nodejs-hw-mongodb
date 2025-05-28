@@ -4,11 +4,11 @@ import 'dotenv/config';
 import { getEnvVar } from './getEnvVar.js';
 
 const transporter = nodemailer.createTransport({
-  host: getEnvVar('SMPT_HOST'),
-  port: Number(getEnvVar('SMPT_PORT')),
+  host: getEnvVar('SMTP_HOST'),
+  port: Number(getEnvVar('SMTP_PORT')),
   auth: {
-    user: getEnvVar('SMPT_USER'),
-    pass: getEnvVar('SMPT_PASSWORD'),
+    user: getEnvVar('SMTP_USER'),
+    pass: getEnvVar('SMTP_PASSWORD'),
   },
 });
 
