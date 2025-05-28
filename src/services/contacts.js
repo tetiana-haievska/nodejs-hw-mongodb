@@ -1,4 +1,3 @@
-// import mongoose from 'mongoose';
 import ContactCollection from '../db/models/contact.js';
 import { calcPaginationData } from '../utils/calcPaginationData.js';
 import { typeList } from '../constants/contacts.js';

@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import pino from 'pino-http';
 import contactRouter from './routers/contacts.js';
 import { getEnvVar } from './utils/getEnvVar.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -12,6 +13,7 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
   app.use(express.json());
+  app.use(express.static('uploads'));
   app.use('/auth', authRouter);
   app.use('/contacts', contactRouter);
   app.use('/contacts/:id', contactRouter);

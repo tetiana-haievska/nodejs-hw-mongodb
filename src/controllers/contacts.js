@@ -12,6 +12,9 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { isValidObjectId } from 'mongoose';
+import { saveFileToUploadsDir } from '../utils/saveFileToUploadsDir.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getContactsController = async (req, res) => {
   const paginationParams = parsePaginationParams(req.query);
@@ -68,7 +71,19 @@ export const getContactsByIdController = async (req, res) => {
   });
 };
 
-export const addContactsController = async (req, res) => {
+export const addContactController = async (req, res) => {
+  let photo;
+  if (req.file) {
+    if (getEnvVar('CLOUDINARY_ENABLE') === 'true') {
+      photo = await saveFileToCloudinary(req.file);
+    } else {
+      photo = await saveFileToUploadsDir(req.file);
+    }
+  }
+
+  console.log(photo);
+
+// export const addContactsController = async (req, res) => {
   const { _id: userId } = req.user;
   const { email, contactType, ...rest } = req.body;
 
@@ -76,7 +91,7 @@ export const addContactsController = async (req, res) => {
     throw createHttpError(400, 'contactType is required');
   }
 
-  const data = await addContact({ email: email || null, contactType, ...rest, userId });
+  const data = await addContact({ email: email || null, contactType, ...rest, photo, userId });
 
   res.status(201).json({
     status: 201,
@@ -128,7 +143,17 @@ export const updateContactController = async (req, res) => {
     throw createHttpError(400, 'Invalid contact ID');
   }
 
-  const updatedContact = await updateContactById(cleanId, { ...req.body, userId });
+  let photo;
+  if (req.file) {
+    if (getEnvVar('CLOUDINARY_ENABLE') === 'true') {
+      photo = await saveFileToCloudinary(req.file);
+    } else {
+      photo = await saveFileToUploadsDir(req.file);
+    }
+  }
+  console.log(photo);
+
+  const updatedContact = await updateContactById(cleanId, { ...req.body, photo }, userId);
 
   if (!updatedContact || updatedContact.userId.toString() !== userId.toString()) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
