@@ -3,7 +3,7 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   getContactsController,
   getContactsByIdController,
-  addContactsController,
+  addContactController,
   upsertContactController,
   updateContactController,
   deleteContactController,
@@ -33,7 +33,7 @@ contactRouter.post(
   '/',
   upload.single('photo'),
   validateBody(addValidateContacts),
-  ctrlWrapper(addContactsController),
+  ctrlWrapper(addContactController),
 );
 
 contactRouter.put(
