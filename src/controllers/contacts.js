@@ -153,7 +153,7 @@ export const updateContactController = async (req, res) => {
   }
   console.log(photo);
 
-  const updatedContact = await updateContactById(cleanId, { ...req.body, photo }, userId);
+  const updatedContact = await updateContactById(cleanId, userId, { ...req.body, photo });
 
   if (!updatedContact || updatedContact.userId.toString() !== userId.toString()) {
     throw createHttpError(404, `Contact with ID ${cleanId} not found`);
